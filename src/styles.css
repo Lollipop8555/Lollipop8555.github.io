@@ -1,0 +1,248 @@
+/* ============================================
+   Lollipop Home — 全局样式系统
+   设计语言：暗色为主，玻璃拟态，渐变光晕，细腻动效
+   ============================================ */
+
+/* ----- 设计令牌（Design Tokens）----- */
+:root {
+  /* 排版 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
+    "Helvetica Neue", "Microsoft YaHei", "Source Han Sans CN", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  --font-display: "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+
+  /* 缓动曲线 */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* 间距 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* 动画时长 */
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 600ms;
+  --dur-glacial: 1200ms;
+
+  /* z-index 层级 */
+  --z-bg: 0;
+  --z-base: 1;
+  --z-content: 10;
+  --z-nav: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+}
+
+/* ----- 暗色主题（默认）----- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-canvas: #07070d;
+  --bg-solid: #12121d;
+  --bg-surface: rgba(20, 20, 32, 0.55);
+  --bg-surface-strong: rgba(28, 28, 42, 0.85);
+  --bg-elevated: rgba(36, 36, 54, 0.7);
+
+  --text-primary: #f4f4fb;
+  --text-secondary: rgba(244, 244, 251, 0.7);
+  --text-tertiary: rgba(244, 244, 251, 0.45);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --accent-1: #a78bfa;
+  --accent-2: #f472b6;
+  --accent-3: #fb923c;
+  --accent-gradient: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);
+
+  --shadow-glow: 0 0 60px -10px rgba(167, 139, 250, 0.5);
+  --shadow-card: 0 24px 48px -16px rgba(0, 0, 0, 0.6);
+  --shadow-elevated: 0 32px 64px -24px rgba(0, 0, 0, 0.7);
+}
+
+/* ----- 浅色主题 ----- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-canvas: #f5f5fb;
+  --bg-solid: #ffffff;
+  --bg-surface: rgba(255, 255, 255, 0.6);
+  --bg-surface-strong: rgba(255, 255, 255, 0.85);
+  --bg-elevated: rgba(255, 255, 255, 0.92);
+
+  --text-primary: #16161e;
+  --text-secondary: rgba(22, 22, 30, 0.7);
+  --text-tertiary: rgba(22, 22, 30, 0.45);
+
+  --border-subtle: rgba(20, 20, 32, 0.08);
+  --border-strong: rgba(20, 20, 32, 0.16);
+
+  --accent-1: #7c3aed;
+  --accent-2: #db2777;
+  --accent-3: #ea580c;
+  --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #db2777 50%, #ea580c 100%);
+
+  --shadow-glow: 0 0 80px -20px rgba(124, 58, 237, 0.35);
+  --shadow-card: 0 24px 48px -16px rgba(20, 20, 32, 0.18);
+  --shadow-elevated: 0 32px 64px -24px rgba(20, 20, 32, 0.25);
+}
+
+/* ----- Reset ----- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  /* 字卡有最小可读宽度，极窄视口下会故意出屏。
+     这里裁掉出屏部分而不产生横向滚动条：
+     clip 不像 hidden 那样建立滚动容器，sticky 顶栏不受影响。 */
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 必须是 clip 而不是 hidden：
+     hidden 会让 body 变成滚动容器，position: sticky 直接失效 */
+  overflow-x: clip;
+  transition: background-color var(--dur-slow) var(--ease-out),
+    color var(--dur-slow) var(--ease-out);
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+ul {
+  list-style: none;
+}
+
+/* 文字选区 */
+::selection {
+  background: var(--accent-2);
+  color: #fff;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-1);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+/* ----- 通用工具类 ----- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-inline: var(--space-7);
+  }
+}
+
+.glass {
+  background: var(--bg-surface);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--border-subtle);
+}
+
+.text-gradient {
+  background: var(--accent-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 尊重用户偏好：减少动画 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 应用根节点 */
+#app {
+  isolation: isolate;
+}
+
+/* 修复 iOS 安全区 */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
