@@ -4,15 +4,11 @@ import vue from '@vitejs/plugin-vue'
 import { appIcons } from './vite-plugins/app-icons.js'
 
 /**
- * GitHub Pages 部署说明：
+ * 资源基路径。
  *
- *  场景 A：部署为「用户主页」仓库（如 Lollipop8555.github.io）—— base 留 '/'
- *  场景 B：部署为「项目主页」仓库（如 Lollipop8555.github.io/LollipopHome）—— base 设 '/LollipopHome/'
- *
- * 通过环境变量 LOLLIPOP_BASE 可以覆盖，CI 里用：
- *   LOLLIPOP_BASE=/LollipopHome/ npm run build
- *
- * 也可以直接改下面 defaultBase 的值。
+ * 部署在域名根路径时保持 '/'；部署在子路径时用环境变量覆盖：
+ *   LOLLIPOP_BASE=/sub-path/ npm run build
+ * 也可以直接改下面的 defaultBase。
  */
 const defaultBase = '/'
 

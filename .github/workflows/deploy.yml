@@ -1,0 +1,64 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GitHub Pages 需要的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只允许一个部署，但不要取消正在进行的发布
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # 仓库名是 Lollipop8555.github.io（用户主页），部署在域名根路径，
+      # 因此 base 必须是 '/' —— 不要传 LOLLIPOP_BASE。
+      # 若将来迁移到「项目主页」（xxx.github.io/repo/），
+      # 在仓库 Settings → Variables 里加 LOLLIPOP_BASE=/repo/ 即可，无需改代码。
+      - name: Build
+        run: npm run build
+        env:
+          LOLLIPOP_BASE: ${{ vars.LOLLIPOP_BASE }}
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # 关键：上传的是构建产物 dist/，不是仓库根目录。
+      # 若上传根目录，线上会是未经 Vite 处理的源码 index.html，
+      # 浏览器加载 /src/main.js 失败 → 页面空白。
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
