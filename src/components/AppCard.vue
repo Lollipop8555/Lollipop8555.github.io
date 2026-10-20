@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
+import { clearReaction, react } from '../composables/useFace.js'
 
 const props = defineProps({
   app: { type: Object, required: true },
@@ -53,6 +54,16 @@ const address = computed(() => {
  * 幅度必须很小：只有角落那一条露在外面，角度一大边缘就会互相割裂。
  * 底牌端正摆放，它是整叠的收尾。
  */
+/**
+ * 和字标联动：盯住某张牌时，左上角换成「专注」的表情。
+ * 只上报情绪，不关心颜文字长什么样，具体字形由 faces.js 决定。
+ */
+function inspect() {
+  react({ mood: 'busy', hand: 'Y' })
+}
+
+onBeforeUnmount(clearReaction)
+
 const style = computed(() => {
   const stagger = props.isLast ? 0 : props.index % 2 === 0 ? -1 : 1
   return {
@@ -70,6 +81,8 @@ const style = computed(() => {
     class="card"
     :class="{ 'card--last': isLast }"
     :style="style"
+    @pointerenter="inspect"
+    @pointerleave="clearReaction"
   >
     <span class="card__face">
       <span class="card__frame" aria-hidden="true" />
