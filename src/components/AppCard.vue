@@ -77,8 +77,9 @@ const style = computed(() => {
       <!-- 中央大图案：扑克牌正中的花色，被上方牌压住也无所谓 -->
       <span class="card__motif" aria-hidden="true">{{ motif }}</span>
 
-      <!-- 左上角：favicon + 名称。叠起来时唯一必须看清的部分 -->
+      <!-- 名称在左上、图标在右上：叠起来时唯一必须看清的一整行 -->
       <span class="card__corner">
+        <span class="card__name">{{ app.name }}</span>
         <span class="card__icon" aria-hidden="true">
           <img
             v-if="showIcon"
@@ -92,10 +93,9 @@ const style = computed(() => {
           <span v-else-if="showEmoji" class="card__emoji">{{ app.emoji }}</span>
           <span v-else class="card__initial">{{ initial }}</span>
         </span>
-        <span class="card__name">{{ app.name }}</span>
       </span>
 
-      <!-- 右缘竖排地址：防伪码式的装饰，不参与信息表达 -->
+      <!-- 左缘竖排地址：贴着抽出方向，牌弹出来时整条都在视野里 -->
       <span class="card__spine" aria-hidden="true" :title="app.url">{{ address }}</span>
     </span>
   </a>
@@ -236,7 +236,7 @@ const style = computed(() => {
   color: hsl(var(--hue) 70% 45% / 0.16);
 }
 
-/* 左上角信息区：叠放时唯一必须看清的一条 */
+/* 信息区横贯牌顶：名称靠左，图标靠右，叠放时这一整行都必须看清 */
 .card__corner {
   position: absolute;
   top: 0;
@@ -244,10 +244,11 @@ const style = computed(() => {
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 12px;
-  /* 右侧给竖排地址让位 */
-  padding: 26px 56px 20px 26px;
-  max-width: 100%;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  /* 左侧让出竖排地址的车道，避免和名称撞在一起 */
+  padding: 26px 26px 20px 44px;
 }
 
 .card__icon {
@@ -294,6 +295,7 @@ const style = computed(() => {
 }
 
 .card__name {
+  flex: 1 1 auto;
   min-width: 0;
   font-size: 1.05rem;
   font-weight: 600;
@@ -305,11 +307,26 @@ const style = computed(() => {
   text-overflow: ellipsis;
 }
 
-/* 右缘竖排地址：像防伪码一样沿卡片边缘排布，超出卡面自然渐隐 */
+/* 首字放大：中文读作一枚「领字」，英文读作花体起笔。
+   用 ::first-letter 而不是拆 DOM，屏幕阅读器仍读到完整名称。 */
+.card__name::first-letter {
+  font-size: 1.35em;
+  font-weight: 700;
+  color: hsl(var(--hue) 100% 90% / 0.95);
+  margin-right: 0.04em;
+  text-shadow: 0 2px 12px hsl(var(--hue) 90% 60% / 0.4);
+}
+:root[data-theme="light"] .card__name::first-letter {
+  color: hsl(var(--hue) 72% 40%);
+  text-shadow: none;
+}
+
+/* 左缘竖排地址：像防伪码一样沿卡片边缘排布，超出卡面自然渐隐。
+   放左侧是因为牌只会向左抽出，左侧这一条永远可见。 */
 .card__spine {
   position: absolute;
   top: 24px;
-  right: 18px;
+  left: 16px;
   bottom: 24px;
   z-index: 2;
   writing-mode: vertical-rl;
@@ -336,8 +353,8 @@ const style = computed(() => {
   }
 
   .card__corner {
-    gap: 14px;
-    padding: 28px 62px 24px 30px;
+    gap: 16px;
+    padding: 28px 30px 24px 50px;
   }
 
   .card__icon {
@@ -358,13 +375,17 @@ const style = computed(() => {
     font-size: 1.18rem;
   }
 
+  .card__name::first-letter {
+    font-size: 1.45em;
+  }
+
   .card__motif {
     font-size: 340px;
   }
 
   .card__spine {
     top: 26px;
-    right: 20px;
+    left: 18px;
     bottom: 26px;
     font-size: 0.58rem;
   }
@@ -426,6 +447,41 @@ const style = computed(() => {
   from {
     opacity: 0;
     transform: translate3d(var(--fan, 0px), 16px, 0) rotate(calc(var(--tilt, 0deg) * 2.2));
+  }
+}
+
+/* 竖屏 / 窄窗：没有向左抽出的车道，改成轻轻上浮一档。
+   上浮量 14px 远小于露出带高度（约 120~160px），也远小于上一张牌
+   角落信息所在的纵向范围，所以只会多露出自己的一点点牌面，
+   绝不会压住上一张的名称与图标。
+   与上面的横版规则媒体查询互斥（719.98px / 720px），互不干扰。 */
+@media (hover: hover) and (pointer: fine) and (max-width: 719.98px) {
+  .card:hover .card__face,
+  .card:focus-visible .card__face {
+    transform: translate3d(var(--fan, 0px), -14px, 0) rotate(var(--tilt, 0deg));
+    border-color: hsl(var(--hue) 85% 72% / 0.42);
+    box-shadow:
+      0 26px 44px -26px hsl(var(--hue) 85% 28% / 0.95),
+      0 14px 24px -16px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 hsl(var(--hue) 95% 88% / 0.16);
+  }
+
+  :root[data-theme="light"] .card:hover .card__face {
+    box-shadow:
+      0 26px 44px -28px hsl(var(--hue) 60% 40% / 0.4),
+      0 14px 24px -18px rgba(20, 20, 32, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* 只给一点微弱的响应，不做旋转，避免窄屏上动作过多 */
+  .card:hover .card__icon {
+    transform: scale(1.04);
+  }
+
+  .card:focus-visible .card__face {
+    box-shadow:
+      0 0 0 3px hsl(var(--hue) 90% 66% / 0.4),
+      0 26px 44px -26px hsl(var(--hue) 85% 28% / 0.9);
   }
 }
 

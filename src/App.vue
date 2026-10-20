@@ -2,6 +2,10 @@
 import BackgroundFX from './components/BackgroundFX.vue'
 import NavBar from './components/NavBar.vue'
 import AppGrid from './components/AppGrid.vue'
+import { useTitleFace } from './composables/useTitleFace.js'
+
+// 标签页标题在品牌名与颜文字之间轮播
+useTitleFace()
 </script>
 
 <template>
