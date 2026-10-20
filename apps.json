@@ -1,32 +1,32 @@
 {
     "WhatToEat": {
         "name": "今天吃点啥",
-        "url": "https://lollipop8555.github.io/WhatToEat/embed.html",
+        "url": "https://looly.top/WhatToEat/embed.html",
         "emoji": "🍱"
     },
     "ConstellationDaily": {
         "name": "每日星座",
-        "url": "https://lollipop8555.github.io/ConstellationDaily/",
+        "url": "https://looly.top/ConstellationDaily/",
         "emoji": "✨"
     },
     "LuckyDay": {
         "name": "幸运签",
-        "url": "https://lollipop8555.github.io/LuckyDay/",
+        "url": "https://looly.top/LuckyDay/",
         "emoji": "🎴"
     },
     "PhotoCurve": {
         "name": "图片混淆",
-        "url": "https://lollipop8555.github.io/PhotoCurve/",
+        "url": "https://looly.top/PhotoCurve/",
         "emoji": "🌀"
     },
     "ScratchCard": {
         "name": "囍相逢",
-        "url": "https://lollipop8555.github.io/ScratchCard/",
+        "url": "https://looly.top/ScratchCard/",
         "emoji": "🎫"
     },
     "PopRPG": {
         "name": "PopRPG",
-        "url": "https://lollipop8555.github.io/PopRPG/",
+        "url": "https://looly.top/PopRPG/",
         "emoji": "🎮"
     }
 }
