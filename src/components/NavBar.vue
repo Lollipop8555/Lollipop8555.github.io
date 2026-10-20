@@ -1,8 +1,21 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { useTheme } from '../composables/useTheme.js'
+import { useFace } from '../composables/useFace.js'
+import { useGaze } from '../composables/useGaze.js'
 
 const { theme, toggle } = useTheme()
+
+/**
+ * 字标会随状态变脸：括号是语气，两只眼是情绪，末位字符是手势。
+ * 只有眼睛恰好是 oo 时才有糖果互换，其余表情保持字形本身。
+ */
+const { face, enter, leave, onFocus, onBlur, cheer, pressStart } = useFace()
+const candy = computed(() => face.value.eyes === 'oo')
+
+// 眼珠跟着指针偏一点点，位移写在 .face 上的 CSS 变量里
+const faceEl = ref(null)
+useGaze(faceEl)
 
 const scrolled = ref(false)
 let raf = 0
@@ -26,21 +39,36 @@ onBeforeUnmount(() => {
 <template>
   <header class="nav" :class="{ 'nav--scrolled': scrolled }">
     <div class="container nav__inner">
-      <a class="nav__brand" href="#" aria-label="Lollipop Home">
+      <a
+        class="nav__brand"
+        href="#"
+        aria-label="Lollipop Home"
+        @mouseenter="enter"
+        @mouseleave="leave"
+        @focus="onFocus"
+        @blur="onBlur"
+        @pointerdown="pressStart"
+        @click="cheer"
+      >
         <span class="nav__logo" aria-hidden="true">
-          <!-- 颜文字字标：两个 l 化作括号，oo 是眼睛，y 是挥手 -->
-          <span class="face">
-            <span class="face__cell face__cell--bracket">(</span>
+          <!-- 颜文字字标：括号是语气，两只眼是情绪，最后一个字符是手势 -->
+          <span
+            ref="faceEl"
+            class="face"
+            :class="{ 'face--candy': candy }"
+            :data-mood="face.mood"
+          >
+            <span class="face__cell face__cell--bracket">{{ face.open }}</span>
             <span class="face__cell face__cell--eye">
-              <span class="face__o">o</span>
-              <span class="face__candy"></span>
+              <span class="face__o">{{ face.left }}</span>
+              <span v-if="candy" class="face__candy"></span>
             </span>
             <span class="face__cell face__cell--eye">
-              <span class="face__o">o</span>
-              <span class="face__candy"></span>
+              <span class="face__o">{{ face.right }}</span>
+              <span v-if="candy" class="face__candy"></span>
             </span>
-            <span class="face__cell face__cell--bracket">)</span>
-            <span class="face__cell face__cell--wave">y</span>
+            <span class="face__cell face__cell--bracket">{{ face.close }}</span>
+            <span class="face__cell face__cell--wave">{{ face.handGlyph }}</span>
           </span>
         </span>
         <span class="nav__title">Lollipop</span>
@@ -161,6 +189,11 @@ onBeforeUnmount(() => {
   height: 1em;
 }
 
+/* 眼珠跟着指针偏一点点：只挪眼睛所在的两格，字标与括号纹丝不动 */
+.face__cell--eye {
+  transform: translate3d(var(--gaze-x, 0px), var(--gaze-y, 0px), 0);
+}
+
 .face__cell--bracket {
   color: var(--text-secondary);
   transition: color var(--dur-fast) var(--ease-out);
@@ -177,8 +210,9 @@ onBeforeUnmount(() => {
   transition: opacity var(--dur-fast) var(--ease-out),
     transform var(--dur-base) var(--ease-spring);
 }
-.nav__brand:hover .face__o,
-.nav__brand:focus-visible .face__o {
+/* 只有眼睛是 oo 时，才把 o 换成糖果；其他表情原样显示 */
+.nav__brand:hover .face--candy .face__o,
+.nav__brand:focus-visible .face--candy .face__o {
   opacity: 0;
   transform: scale(0.4);
 }

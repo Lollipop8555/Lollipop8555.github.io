@@ -1,17 +1,25 @@
 import { onBeforeUnmount, onMounted } from 'vue'
+import { composeFace } from '../data/faces.js'
 
 /**
  * 标签页标题彩蛋。
  *
- * looly 的两个 l 正好可以当作一对括号，oo 是眼睛，y 是挥手：
- *   (oo)y  默认   [00]y  冷静   {oo}y  代码感
+ * 标题里的表情和导航字标共用同一套语法（见 src/data/faces.js），
+ * 所以这里不是手写四段字符串，而是从情绪表里现取：
+ *   idle → (oo)y   busy → [00]y   star → {**}v
+ * 改一次词表，标题和字标会一起变。
  *
  * 只在标签页可见时轮播；切走时换成睡觉的表情并停掉计时器，
  * 回来再从当前标题继续，避免后台空转和标题闪烁。
  */
 const BASE_TITLE = 'Lollipop · Home'
-const TITLES = [BASE_TITLE, '(oo)y · Lollipop', '[00]y · Lollipop', '{oo}y · Lollipop']
-const SLEEPING_TITLE = '(- -)y zZ'
+const TITLES = [
+  BASE_TITLE,
+  `${composeFace({ mood: 'idle' }).text} · Lollipop`,
+  `${composeFace({ mood: 'busy' }).text} · Lollipop`,
+  `${composeFace({ mood: 'star' }).text} · Lollipop`
+]
+const SLEEPING_TITLE = `${composeFace({ mood: 'sleepy' }).text} zZ`
 const STEP = 5000
 
 export function useTitleFace() {
