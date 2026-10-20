@@ -28,20 +28,20 @@ onBeforeUnmount(() => {
     <div class="container nav__inner">
       <a class="nav__brand" href="#" aria-label="Lollipop Home">
         <span class="nav__logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22">
-            <defs>
-              <linearGradient id="brandg" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#a78bfa"/>
-                <stop offset="0.5" stop-color="#f472b6"/>
-                <stop offset="1" stop-color="#fb923c"/>
-              </linearGradient>
-            </defs>
-            <g transform="translate(12 12) rotate(-15) translate(-12 -12)">
-              <circle cx="12" cy="8" r="5" fill="url(#brandg)"/>
-              <ellipse cx="10" cy="6" rx="1.6" ry="1" fill="#fff" opacity="0.55"/>
-              <rect x="11" y="12" width="2" height="11" rx="1" fill="currentColor"/>
-            </g>
-          </svg>
+          <!-- 颜文字字标：两个 l 化作括号，oo 是眼睛，y 是挥手 -->
+          <span class="face">
+            <span class="face__cell face__cell--bracket">(</span>
+            <span class="face__cell face__cell--eye">
+              <span class="face__o">o</span>
+              <span class="face__candy"></span>
+            </span>
+            <span class="face__cell face__cell--eye">
+              <span class="face__o">o</span>
+              <span class="face__candy"></span>
+            </span>
+            <span class="face__cell face__cell--bracket">)</span>
+            <span class="face__cell face__cell--wave">y</span>
+          </span>
         </span>
         <span class="nav__title">Lollipop</span>
       </a>
@@ -122,8 +122,9 @@ onBeforeUnmount(() => {
 }
 .nav__brand:hover { opacity: 0.85; }
 
+/* 五格等宽：括号 + 两只眼 + 挥手，任何变体都不能让宽度跳动 */
 .nav__logo {
-  width: 36px;
+  width: 64px;
   height: 36px;
   display: grid;
   place-items: center;
@@ -134,7 +135,118 @@ onBeforeUnmount(() => {
   transition: transform var(--dur-base) var(--ease-spring);
 }
 .nav__brand:hover .nav__logo {
-  transform: rotate(-12deg) scale(1.05);
+  transform: rotate(-6deg) scale(1.05);
+}
+
+.face {
+  display: grid;
+  grid-auto-flow: column;
+  /* 眼睛两格略宽，给糖果留出间距；总宽固定，hover 不会改布局 */
+  grid-template-columns: 1ch 1.4ch 1.4ch 1ch 1ch;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-ligatures: none;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+.face__cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 1em;
+}
+
+.face__cell--bracket {
+  color: var(--text-secondary);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.nav__brand:hover .face__cell--bracket {
+  color: var(--text-primary);
+}
+
+/* o 与糖果叠在同一格里，靠透明度互换，不参与布局 */
+.face__o {
+  display: block;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-base) var(--ease-spring);
+}
+.nav__brand:hover .face__o,
+.nav__brand:focus-visible .face__o {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.face__candy {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  box-shadow: 0 0 10px -2px rgba(244, 114, 182, 0.55);
+  opacity: 0;
+  transform: scale(0.35) rotate(-30deg);
+  transition: opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-base) var(--ease-spring);
+}
+.face__candy::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2.5px;
+  width: 4.5px;
+  height: 2.6px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.6;
+  transform: rotate(-18deg);
+}
+.nav__brand:hover .face__candy,
+.nav__brand:focus-visible .face__candy {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.face__cell--wave {
+  transform-origin: 50% 85%;
+}
+.nav__brand:hover .face__cell--wave {
+  animation: face-wave 900ms var(--ease-in-out) 1;
+}
+
+@keyframes face-wave {
+  0%,
+  100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  30% {
+    transform: rotate(14deg) translateY(-1px);
+  }
+  65% {
+    transform: rotate(-8deg) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__brand:hover .nav__logo,
+  .nav__brand:hover .face__cell--wave {
+    transform: none;
+    animation: none;
+  }
+  .face__o,
+  .face__candy,
+  .face__cell--bracket {
+    transition: none;
+  }
 }
 
 .nav__actions {
