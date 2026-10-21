@@ -28,5 +28,10 @@
         "name": "PopRPG",
         "url": "https://looly.top/PopRPG/",
         "emoji": "🎮"
+    },
+    "Store": {
+        "name": "Store",
+        "url": "https://m.looly.top/",
+        "emoji": "🛍"
     }
 }
