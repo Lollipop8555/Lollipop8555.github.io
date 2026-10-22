@@ -33,5 +33,10 @@
         "name": "Home",
         "url": "https://m.looly.top/",
         "emoji": "🏠"
+    },
+    "GameBoy": {
+        "name": "GameBoy",
+        "url": "https://looly.top/GameBoyLive/",
+        "emoji": "🕹️"
     }
 }
