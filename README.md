@@ -16,6 +16,7 @@
 - **🎴 抽牌交互** —— 横版悬停时整张牌向左抽出，填满预留车道，纵向不动、不遮挡任何兄弟牌
 - **📱 横竖自适应** —— 宽屏 16:9 横卡，竖屏 9:16 竖卡并静止叠放
 - **🔍 图标自动获取** —— 编译期抓取各站点自己声明的 favicon，新增项目零配置
+- **🔌 只读数据接口** —— 由 `apps.json` 自动生成 `/api/apps.json`，供外部调用方取数，页面本身不展示接口信息
 - **🌗 双主题** —— 跟随系统 + 手动切换，胶囊滑块，记忆到 localStorage
 - **♿ 可访问性** —— 遵循 `prefers-reduced-motion`、`hover:hover` 媒体查询
 
@@ -59,12 +60,74 @@ LollipopHome/
 │  ├─ main.js
 │  └─ styles.css              # 设计令牌 + 全局样式
 ├─ vite-plugins/
-│  └─ app-icons.js            # 编译期抓取站点 favicon（只读 apps.json）
+│  ├─ app-icons.js            # 编译期抓取站点 favicon（只读 apps.json）
+│  └─ apps-api.js             # 由 apps.json 生成只读数据接口
 ├─ apps.json                  # 项目清单
 ├─ index.html
 ├─ vite.config.js
 └─ package.json
 ```
+
+---
+
+## 🔌 数据接口
+
+站点是纯静态托管（GitHub Pages），没有服务端。这里的「接口」是构建阶段由 `apps.json` 生成的一份静态 JSON 文件，随构建产物一并发布，因此无需任何服务端进程。页面本身不引用、也不展示这个接口。
+
+### 请求
+
+```
+GET https://looly.top/api/apps.json
+```
+
+| 项 | 说明 |
+| --- | --- |
+| 方法 | `GET`（`HEAD` 也可用，只返回响应头） |
+| 参数 | 无 |
+| 鉴权 | 无，公开只读 |
+| 响应类型 | `application/json; charset=utf-8` |
+| 跨域 | 允许任意来源（GitHub Pages 对静态资源返回 `Access-Control-Allow-Origin: *`），可直接在浏览器前端 `fetch` |
+
+本地开发时同一路径由 dev server 提供：`http://localhost:5173/api/apps.json`。
+部署在子路径时（`LOLLIPOP_BASE=/repo/`），地址相应变为 `/repo/api/apps.json`。
+构建产物中的文件位置固定为 `dist/api/apps.json`。
+
+### 响应
+
+```json
+{
+  "count": 2,
+  "apps": [
+    {
+      "id": "WhatToEat",
+      "name": "今天吃点啥",
+      "url": "https://looly.top/WhatToEat/",
+      "emoji": "🍱"
+    },
+    {
+      "id": "ConstellationDaily",
+      "name": "每日星座",
+      "url": "https://looly.top/ConstellationDaily/",
+      "emoji": "✨"
+    }
+  ]
+}
+```
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `count` | number | `apps` 的条目数 |
+| `apps` | array | 应用列表，顺序与 `apps.json` 中的书写顺序一致 |
+| `apps[].id` | string | 应用标识，即 `apps.json` 中的键名 |
+| `apps[].name` | string | 显示名称；源数据未提供时回退为 `id` |
+| `apps[].url` | string | 应用入口地址，绝对 URL |
+| `apps[].emoji` | string \| null | 图标降级用的字符；源数据未提供时为 `null` |
+
+说明：
+
+- 源数据中缺少 `url` 的条目会被过滤，不会出现在接口结果里。
+- 接口只输出 `apps.json` 已有的三个字段，不返回站点图标：图标是构建期从各站点抓取的结果，可能随时失败并降级为 `emoji`，不适合作为接口契约。
+- 更新时机：修改 `apps.json` 后重新构建并部署，接口内容随之更新；接口没有独立的数据副本，始终与 `apps.json` 同源。
 
 ---
 
