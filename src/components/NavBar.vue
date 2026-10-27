@@ -75,33 +75,19 @@ onBeforeUnmount(() => {
       </a>
 
       <div class="nav__actions">
-        <a
-          href="https://github.com/Lollipop8555"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="nav__github"
-          aria-label="GitHub"
-        >
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-            <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.09-.74.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.83 2.81 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.94 0-1.31.47-2.39 1.24-3.23-.13-.31-.54-1.54.11-3.21 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.67.24 2.9.12 3.21.77.84 1.24 1.92 1.24 3.23 0 4.62-2.81 5.64-5.49 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5Z"/>
-          </svg>
-        </a>
-
         <button
           class="theme-toggle"
           :aria-label="`切换到${theme === 'dark' ? '浅色' : '深色'}主题`"
           @click="toggle"
         >
-          <span class="theme-toggle__track">
-            <span class="theme-toggle__thumb" :class="{ 'is-light': theme === 'light' }">
-              <svg v-if="theme === 'dark'" viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
-              </svg>
-              <svg v-else viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" fill="currentColor"/>
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-              </svg>
-            </span>
+          <span :key="theme" class="theme-toggle__icon" aria-hidden="true">
+            <svg v-if="theme === 'dark'" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+            </svg>
+            <svg v-else viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="4" fill="currentColor"/>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
           </span>
         </button>
       </div>
@@ -150,10 +136,13 @@ onBeforeUnmount(() => {
 }
 .nav__brand:hover { opacity: 0.85; }
 
-/* 五格等宽：括号 + 两只眼 + 挥手，任何变体都不能让宽度跳动 */
+/* 五格等宽：括号 + 两只眼 + 挥手，任何变体都不能让宽度跳动。
+   盒子按内容自适应宽度（只给最小尺寸），避免不同机型 monospace 字形宽度
+   差异把颜文字挤出 64px 固定框、在手机上变成“空方块”。 */
 .nav__logo {
-  width: 64px;
+  min-width: 56px;
   height: 36px;
+  padding-inline: 10px;
   display: grid;
   place-items: center;
   border-radius: var(--radius-md);
@@ -289,11 +278,13 @@ onBeforeUnmount(() => {
   gap: var(--space-3);
 }
 
-.nav__github {
+/* 主题切换：圆形按钮，点击时图标旋转弹入 */
+.theme-toggle {
   display: grid;
   place-items: center;
   width: 38px;
   height: 38px;
+  padding: 0;
   border-radius: var(--radius-pill);
   border: 1px solid var(--border-subtle);
   background: var(--bg-surface);
@@ -302,47 +293,28 @@ onBeforeUnmount(() => {
     color var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out);
 }
-.nav__github:hover {
-  transform: translateY(-2px) rotate(-3deg);
+.theme-toggle:hover {
+  transform: translateY(-2px);
   color: var(--text-primary);
   border-color: var(--border-strong);
 }
-
-/* 主题切换胶囊 */
-.theme-toggle {
-  padding: 0;
-  border-radius: var(--radius-pill);
+.theme-toggle:active {
+  transform: scale(0.92);
 }
-.theme-toggle__track {
-  position: relative;
-  display: inline-flex;
-  width: 56px;
-  height: 30px;
-  border-radius: var(--radius-pill);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  transition: background var(--dur-base) var(--ease-out);
-}
-.theme-toggle__thumb {
-  position: absolute;
-  top: 50%;
-  left: 4px;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--accent-gradient);
+.theme-toggle__icon {
   display: grid;
   place-items: center;
-  color: #fff;
-  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.3);
-  transition: left var(--dur-base) var(--ease-spring);
+  /* theme 作为 key，每次切换都重挂载，触发一次弹入动画 */
+  animation: theme-pop var(--dur-base) var(--ease-spring);
 }
-.theme-toggle__thumb.is-light {
-  left: calc(100% - 26px);
-}
-
-@media (max-width: 480px) {
-  .nav__brand span:last-child { display: none; }
+@keyframes theme-pop {
+  0% {
+    transform: rotate(-90deg) scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
 }
 </style>
