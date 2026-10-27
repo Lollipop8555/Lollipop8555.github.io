@@ -38,5 +38,10 @@
         "name": "GameBoy",
         "url": "https://looly.top/GameBoyLive/",
         "emoji": "🕹️"
+    },
+    "BalatroLike": {
+        "name": "小丑牌",
+        "url": "https://looly.top/BalatroLike/",
+        "emoji": "🃏"
     }
 }
