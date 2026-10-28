@@ -43,5 +43,10 @@
         "name": "小丑牌",
         "url": "https://looly.top/BalatroLike/",
         "emoji": "🃏"
+    },
+    "LandlordLike": {
+        "name": "幸运房东",
+        "url": "https://looly.top/LandlordLike/",
+        "emoji": "🎰"
     }
 }
