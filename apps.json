@@ -48,5 +48,10 @@
         "name": "幸运房东",
         "url": "https://looly.top/LandlordLike/",
         "emoji": "🎰"
+    },
+    "Rummy": {
+        "name": "Rummy 500",
+        "url": "https://looly.top/Rummy/",
+        "emoji": "🃏"
     }
 }
