@@ -53,5 +53,10 @@
         "name": "Rummy 500",
         "url": "https://looly.top/Rummy/",
         "emoji": "🃏"
+    },
+    "PickerWheel": {
+        "name": "大转盘",
+        "url": "https://looly.top/PickerWheel/",
+        "emoji": "🎡"
     }
 }
