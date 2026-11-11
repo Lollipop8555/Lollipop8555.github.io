@@ -58,5 +58,10 @@
         "name": "大转盘",
         "url": "https://looly.top/PickerWheel/",
         "emoji": "🎡"
+    },
+    "Vellum": {
+        "name": "编辑器",
+        "url": "https://looly.top/Vellum/",
+        "emoji": "👨‍💻"
     }
 }
