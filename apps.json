@@ -63,5 +63,10 @@
         "name": "编辑器",
         "url": "https://looly.top/Vellum/",
         "emoji": "👨‍💻"
+    },
+    "FaceIcon": {
+        "name": "头像制作",
+        "url": "https://looly.top/FaceIcon/",
+        "emoji": "🎭"
     }
 }
