@@ -68,5 +68,10 @@
         "name": "头像制作",
         "url": "https://looly.top/FaceIcon/",
         "emoji": "🎭"
+    },
+    "Banner": {
+        "name": "滚动横幅",
+        "url": "https://looly.top/Banner/",
+        "emoji": "🚩"
     }
 }
