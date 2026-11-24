@@ -73,5 +73,10 @@
         "name": "滚动横幅",
         "url": "https://looly.top/Banner/",
         "emoji": "🚩"
+    },
+    "Sticky": {
+        "name": "便签",
+        "url": "https://looly.top/Sticky/",
+        "emoji": "📝"
     }
 }
