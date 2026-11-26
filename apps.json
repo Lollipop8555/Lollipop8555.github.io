@@ -78,5 +78,10 @@
         "name": "便签",
         "url": "https://looly.top/Sticky/",
         "emoji": "📝"
+    },
+    "Mindmap": {
+        "name": "思维导图",
+        "url": "https://looly.top/Mindmap/",
+        "emoji": "🧠"
     }
 }
