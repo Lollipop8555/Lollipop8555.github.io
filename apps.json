@@ -83,5 +83,10 @@
         "name": "思维导图",
         "url": "https://looly.top/Mindmap/",
         "emoji": "🧠"
+    },
+    "Diagram": {
+        "name": "架构图",
+        "url": "https://looly.top/Diagram/",
+        "emoji": "📐"
     }
 }
