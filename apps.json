@@ -88,5 +88,10 @@
         "name": "架构图",
         "url": "https://looly.top/Diagram/",
         "emoji": "📐"
+    },
+    "RaidenRoguelike": {
+        "name": "打飞机",
+        "url": "https://looly.top/RaidenRoguelike/",
+        "emoji": "✈️"
     }
 }
